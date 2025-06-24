@@ -46,7 +46,7 @@ class CartServiceTest {
                 () -> cartService.getCart(cartId)
         );
 
-        assertThat(exception.getMessage()).isEqualTo("Car with id 1 not found");
+        assertThat(exception.getMessage()).isEqualTo("Cart with id 1 not found");
     }
 
     @Test
@@ -74,7 +74,7 @@ class CartServiceTest {
                 () -> cartService.addRecipe(1L, 0L)
         );
 
-        assertThat(exception.getMessage()).isEqualTo("Car with id 1 not found");
+        assertThat(exception.getMessage()).isEqualTo("Cart with id 1 not found");
     }
 
     @Test

@@ -55,7 +55,7 @@ public class MainControllerTest {
             .get("/carts/1")
         .then()
             .statusCode(HttpStatus.SC_NOT_FOUND)
-            .body("message", is("Car with id 1 not found"))
+            .body("message", is("Cart with id 1 not found"))
         ;
     }
 
@@ -91,7 +91,7 @@ public class MainControllerTest {
             .post("/carts/1/add_recipe")
         .then()
             .statusCode(HttpStatus.SC_NOT_FOUND)
-            .body("message", is("Car with id 1 not found"))
+            .body("message", is("Cart with id 1 not found"))
         ;
     }
 

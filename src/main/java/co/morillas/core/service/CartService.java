@@ -19,11 +19,11 @@ public class CartService {
     }
 
     public Cart getCart(Long id) {
-        return cartRepository.findById(id).orElseThrow(() -> new NotFoundException("Car with id " + id + " not found"));
+        return cartRepository.findById(id).orElseThrow(() -> new NotFoundException("Cart with id " + id + " not found"));
     }
 
     public Cart addRecipe(Long cartId, Long recipeId) {
-        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Car with id " + cartId + " not found"));
+        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Cart with id " + cartId + " not found"));
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new NotFoundException("Recipe with id " + recipeId + " not found"));
 
         recipe.getProducts().forEach(cart::addProduct);
