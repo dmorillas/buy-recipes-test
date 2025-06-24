@@ -37,10 +37,6 @@ public class Recipe {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public List<Product> getProducts() {
         return products;
     }
