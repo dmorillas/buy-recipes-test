@@ -2,6 +2,7 @@ package co.morillas.controller;
 
 import co.morillas.core.domain.Cart;
 import co.morillas.core.domain.Recipe;
+import co.morillas.core.service.CartService;
 import co.morillas.core.service.RecipeService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,11 @@ import java.util.List;
 @RestController
 public class MainController {
 
+    private final CartService cartService;
     private final RecipeService recipeService;
 
-    public MainController(RecipeService recipeService) {
+    public MainController(RecipeService recipeService, CartService cartService) {
+        this.cartService = cartService;
         this.recipeService = recipeService;
     }
 
@@ -24,7 +27,7 @@ public class MainController {
 
     @GetMapping("/carts/{id}")
     public Cart getCart(@PathVariable Long id) {
-        return new Cart();
+        return cartService.getCart(id);
     }
 
     @PostMapping("/carts/{id}/add_recipe")

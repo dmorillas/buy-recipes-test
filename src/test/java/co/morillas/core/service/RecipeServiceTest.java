@@ -29,9 +29,9 @@ class RecipeServiceTest {
 
     @Test
     void getRecipes_ShouldReturnListOfRecipes() {
-        Product product1 = new Product(1L, "product1", 10L);
-        Product product2 = new Product(2L, "product2", 20L);
-        Product product3 = new Product(3L, "product3", 30L);
+        Product product1 = new Product(1L, "product1", 10);
+        Product product2 = new Product(2L, "product2", 20);
+        Product product3 = new Product(3L, "product3", 30);
 
         Recipe recipe1 = new Recipe(1L, "recipe1", Arrays.asList(product1, product2));
         Recipe recipe2 = new Recipe(2L, "recipe2", Arrays.asList(product2, product3));

@@ -1,22 +1,20 @@
 package co.morillas.core.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "product")
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private Long priceInCents;
+    private Integer priceInCents;
 
     public Product() {}
 
-    public Product(Long id, String name, Long priceInCents) {
+    public Product(Long id, String name, Integer priceInCents) {
         this.id = id;
         this.name = name;
         this.priceInCents = priceInCents;
@@ -34,11 +32,11 @@ public class Product {
         this.name = name;
     }
 
-    public Long getPriceInCents() {
+    public Integer getPriceInCents() {
         return priceInCents;
     }
 
-    public void setPriceInCents(Long priceInCents) {
+    public void setPriceInCents(Integer priceInCents) {
         this.priceInCents = priceInCents;
     }
 } 
