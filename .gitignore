@@ -1,0 +1,30 @@
+# Build artifacts
+build/
+out/
+target/
+
+# Gradle
+.gradle/
+gradle-app.setting
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+atlassian-ide-plugin.xml
+
+# Log files
+*.log
+
+# Secrets and environment-specific files
+.env
+
+# OS-specific files
+.DS_Store
+
+# Database file
+recipes.db
+*.db
+*.sqlite
+*.sqlite3 
