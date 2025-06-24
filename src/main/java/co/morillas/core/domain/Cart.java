@@ -14,7 +14,7 @@ public class Cart {
     private Long id;
     private Integer totalInCents = 0;
 
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany
     @JoinTable(
         name = "cart_items",
         joinColumns = @JoinColumn(name = "cart_id"),

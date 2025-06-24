@@ -32,7 +32,7 @@ public class MainController {
 
     @PostMapping("/carts/{id}/add_recipe")
     public Cart addRecipeToCart(@PathVariable Long id, @Valid @RequestBody AddRecipeRequest request) {
-        return new Cart();
+        return cartService.addRecipe(id, request.getRecipeId());
     }
 
     @DeleteMapping("/carts/{cartId}/recipes/{recipeId}")

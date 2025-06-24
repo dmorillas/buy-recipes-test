@@ -30,9 +30,9 @@ CREATE TABLE cart (
 );
 
 CREATE TABLE cart_items (
-    id INTEGER PRIMARY KEY,
     cart_id INTEGER NOT NULL,
     product_id INTEGER NOT NULL,
+    PRIMARY KEY (cart_id, product_id),
     FOREIGN KEY (cart_id) REFERENCES cart(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES product(id)
 );

@@ -1,30 +1,22 @@
 package co.morillas.controller;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-
-import java.util.List;
+import jakarta.validation.constraints.NotNull;
 
 public class AddRecipeRequest {
-    @NotBlank(message = "recipe name can't be null or empty")
-    private String name;
+    @NotNull(message = "recipe name can't be null or empty")
+    private Long recipeId;
 
-    @NotEmpty(message = "recipe product ids can't be empty")
-    private List<Integer> productIds;
+    public AddRecipeRequest() {}
 
-    public String getName() {
-        return name;
+    public AddRecipeRequest(Long recipeId) {
+        this.recipeId = recipeId;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public Long getRecipeId() {
+        return recipeId;
     }
 
-    public List<Integer> getProductIds() {
-        return productIds;
-    }
-
-    public void setProductIds(List<Integer> productIds) {
-        this.productIds = productIds;
+    public void setRecipeId(Long recipeId) {
+        this.recipeId = recipeId;
     }
 }

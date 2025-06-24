@@ -2,14 +2,18 @@ package co.morillas.core.service;
 
 import co.morillas.core.domain.Cart;
 import co.morillas.core.domain.Product;
+import co.morillas.core.domain.Recipe;
 import co.morillas.core.exception.NotFoundException;
 import co.morillas.repository.CartRepository;
+import co.morillas.repository.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,12 +25,15 @@ class CartServiceTest {
     @Mock
     private CartRepository cartRepository;
 
+    @Mock
+    private RecipeRepository recipeRepository;
+
     private CartService cartService;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        cartService = new CartService(cartRepository);
+        cartService = new CartService(cartRepository, recipeRepository);
     }
 
     @Test
@@ -56,5 +63,51 @@ class CartServiceTest {
         assertThat(cart.getId()).isEqualTo(expectedCart.getId());
         assertThat(cart.getTotalInCents()).isEqualTo(expectedCart.getTotalInCents());
         assertThat(cart.getProducts()).hasSize(expectedCart.getProducts().size());
+    }
+
+    @Test
+    void addRecipe_ThrowsExceptionIfCartDoesNotExist() {
+        when(cartRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> cartService.addRecipe(1L, 0L)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("Car with id 1 not found");
+    }
+
+    @Test
+    void addRecipe_ThrowsExceptionIfRecipeDoesNotExist() {
+        Cart expectedCart = new Cart(1L, 30, Collections.emptyList());
+
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
+
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> cartService.addRecipe(1L, 1L)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("Recipe with id 1 not found");
+    }
+
+
+    @Test
+    void addRecipe_AddAllProductsInRecipeInTheCart() {
+        Cart expectedCart = new Cart(1L, 0, new ArrayList<>());
+        Product product1 = new Product(1L, "product1", 10);
+        Product product2 = new Product(2L, "product2", 20);
+        Recipe recipe = new Recipe(1L, "recipe", Arrays.asList(product1, product2));
+
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
+        when(cartRepository.save(any())).thenReturn(expectedCart);
+        when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
+
+        Cart cart = cartService.addRecipe(1L, 1L);
+
+        assertThat(cart.getTotalInCents()).isEqualTo(30);
+        assertThat(cart.getProducts()).hasSize(recipe.getProducts().size());
+        assertThat(cart.getProducts().get(0).getId()).isEqualTo(recipe.getProducts().get(0).getId());
+        assertThat(cart.getProducts().get(1).getId()).isEqualTo(recipe.getProducts().get(1).getId());
     }
 }
