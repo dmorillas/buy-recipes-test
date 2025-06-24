@@ -1,5 +1,6 @@
 package co.morillas.core.service;
 
+import co.morillas.controller.CartResponse;
 import co.morillas.core.domain.Cart;
 import co.morillas.core.domain.Recipe;
 import co.morillas.core.exception.NotFoundException;
@@ -18,27 +19,28 @@ public class CartService {
         this.recipeRepository = recipeRepository;
     }
 
-    public Cart getCart(Long id) {
-        return cartRepository.findById(id).orElseThrow(() -> new NotFoundException("Cart with id " + id + " not found"));
+    public CartResponse getCart(Long id) {
+        Cart cart = cartRepository.findById(id).orElseThrow(() -> new NotFoundException("Cart with id " + id + " not found"));
+        return CartResponse.fromDomain(cart);
     }
 
-    public Cart addRecipe(Long cartId, Long recipeId) {
+    public CartResponse addRecipe(Long cartId, Long recipeId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Cart with id " + cartId + " not found"));
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new NotFoundException("Recipe with id " + recipeId + " not found"));
 
         recipe.getProducts().forEach(cart::addProduct);
         cart = cartRepository.save(cart);
 
-        return cart;
+        return CartResponse.fromDomain(cart);
     }
 
-    public Cart removeRecipe(Long cartId, Long recipeId) {
+    public CartResponse removeRecipe(Long cartId, Long recipeId) {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Cart with id " + cartId + " not found"));
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new NotFoundException("Recipe with id " + recipeId + " not found"));
 
         recipe.getProducts().forEach(cart::removeProduct);
         cart = cartRepository.save(cart);
 
-        return cart;
+        return CartResponse.fromDomain(cart);
     }
 }

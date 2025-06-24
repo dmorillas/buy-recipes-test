@@ -1,5 +1,6 @@
 package co.morillas.core.service;
 
+import co.morillas.controller.RecipeResponse;
 import co.morillas.core.domain.Product;
 import co.morillas.core.domain.Recipe;
 import co.morillas.repository.RecipeRepository;
@@ -39,10 +40,11 @@ class RecipeServiceTest {
 
         when(recipeRepository.findAll()).thenReturn(expectedRecipes);
 
-        List<Recipe> result = recipeService.getRecipes();
+        List<RecipeResponse> result = recipeService.getRecipes();
 
         assertThat(expectedRecipes.size()).isEqualTo(result.size());
-        assertThat(expectedRecipes).isEqualTo(result);
+        assertThat(expectedRecipes.get(0).getId()).isEqualTo(result.get(0).getId());
+        assertThat(expectedRecipes.get(1).getId()).isEqualTo(result.get(1).getId());
         verify(recipeRepository, times(1)).findAll();
     }
 }

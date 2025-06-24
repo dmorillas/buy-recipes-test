@@ -1,7 +1,5 @@
 package co.morillas.controller;
 
-import co.morillas.core.domain.Cart;
-import co.morillas.core.domain.Recipe;
 import co.morillas.core.service.CartService;
 import co.morillas.core.service.RecipeService;
 import jakarta.validation.Valid;
@@ -21,22 +19,22 @@ public class MainController {
     }
 
     @GetMapping("/recipes")
-    public List<Recipe> getAllRecipes() {
+    public List<RecipeResponse> getAllRecipes() {
         return recipeService.getRecipes();
     }
 
     @GetMapping("/carts/{id}")
-    public Cart getCart(@PathVariable Long id) {
+    public CartResponse getCart(@PathVariable Long id) {
         return cartService.getCart(id);
     }
 
     @PostMapping("/carts/{id}/add_recipe")
-    public Cart addRecipeToCart(@PathVariable Long id, @Valid @RequestBody AddRecipeRequest request) {
+    public CartResponse addRecipeToCart(@PathVariable Long id, @Valid @RequestBody AddRecipeRequest request) {
         return cartService.addRecipe(id, request.getRecipeId());
     }
 
     @DeleteMapping("/carts/{cartId}/recipes/{recipeId}")
-    public Cart removeRecipeFromCart(@PathVariable Long cartId, @PathVariable Long recipeId) {
+    public CartResponse removeRecipeFromCart(@PathVariable Long cartId, @PathVariable Long recipeId) {
         return cartService.removeRecipe(cartId, recipeId);
     }
 } 

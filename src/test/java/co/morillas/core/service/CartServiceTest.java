@@ -1,5 +1,6 @@
 package co.morillas.core.service;
 
+import co.morillas.controller.CartResponse;
 import co.morillas.core.domain.Cart;
 import co.morillas.core.domain.Product;
 import co.morillas.core.domain.Recipe;
@@ -55,7 +56,7 @@ class CartServiceTest {
 
         when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
 
-        Cart cart = cartService.getCart(1L);
+        CartResponse cart = cartService.getCart(1L);
 
         assertThat(cart.getId()).isEqualTo(expectedCart.getId());
         assertThat(cart.getTotalInCents()).isEqualTo(expectedCart.getTotalInCents());
@@ -99,7 +100,7 @@ class CartServiceTest {
         when(cartRepository.save(any())).thenReturn(expectedCart);
         when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
 
-        Cart cart = cartService.addRecipe(1L, 1L);
+        CartResponse cart = cartService.addRecipe(1L, 1L);
 
         assertThat(cart.getTotalInCents()).isEqualTo(30);
         assertThat(cart.getProducts()).hasSize(recipe.getProducts().size());
@@ -145,7 +146,7 @@ class CartServiceTest {
         when(cartRepository.save(any())).thenReturn(expectedCart);
         when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
 
-        Cart cart = cartService.removeRecipe(1L, 1L);
+        CartResponse cart = cartService.removeRecipe(1L, 1L);
 
         assertThat(cart.getTotalInCents()).isEqualTo(0);
         assertThat(cart.getProducts()).hasSize(0);
