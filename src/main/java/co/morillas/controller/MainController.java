@@ -36,7 +36,7 @@ public class MainController {
     }
 
     @DeleteMapping("/carts/{cartId}/recipes/{recipeId}")
-    public void removeRecipeFromCart(@PathVariable Long cartId, @PathVariable Long recipeId) {
-
+    public Cart removeRecipeFromCart(@PathVariable Long cartId, @PathVariable Long recipeId) {
+        return cartService.removeRecipe(cartId, recipeId);
     }
 } 

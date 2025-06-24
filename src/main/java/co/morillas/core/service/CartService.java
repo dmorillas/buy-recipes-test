@@ -31,4 +31,14 @@ public class CartService {
 
         return cart;
     }
+
+    public Cart removeRecipe(Long cartId, Long recipeId) {
+        Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Cart with id " + cartId + " not found"));
+        Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new NotFoundException("Recipe with id " + recipeId + " not found"));
+
+        recipe.getProducts().forEach(cart::removeProduct);
+        cart = cartRepository.save(cart);
+
+        return cart;
+    }
 }

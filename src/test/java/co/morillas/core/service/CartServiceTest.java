@@ -11,10 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -91,7 +88,6 @@ class CartServiceTest {
         assertThat(exception.getMessage()).isEqualTo("Recipe with id 1 not found");
     }
 
-
     @Test
     void addRecipe_AddAllProductsInRecipeInTheCart() {
         Cart expectedCart = new Cart(1L, 0, new ArrayList<>());
@@ -109,5 +105,49 @@ class CartServiceTest {
         assertThat(cart.getProducts()).hasSize(recipe.getProducts().size());
         assertThat(cart.getProducts().get(0).getId()).isEqualTo(recipe.getProducts().get(0).getId());
         assertThat(cart.getProducts().get(1).getId()).isEqualTo(recipe.getProducts().get(1).getId());
+    }
+
+    @Test
+    void removeRecipe_ThrowsExceptionIfCartDoesNotExist() {
+        when(cartRepository.findById(1L)).thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> cartService.removeRecipe(1L, 0L)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("Cart with id 1 not found");
+    }
+
+    @Test
+    void removeRecipe_ThrowsExceptionIfRecipeDoesNotExist() {
+        Cart expectedCart = new Cart(1L, 30, Collections.emptyList());
+
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
+
+        NotFoundException exception = assertThrows(
+                NotFoundException.class,
+                () -> cartService.removeRecipe(1L, 1L)
+        );
+
+        assertThat(exception.getMessage()).isEqualTo("Recipe with id 1 not found");
+    }
+
+    @Test
+    void removeRecipe_RemoveProductsInRecipeFromTheCart() {
+        Product product1 = new Product(1L, "product1", 10);
+        Product product2 = new Product(2L, "product2", 20);
+
+        Cart expectedCart = new Cart(1L, 30, new ArrayList<>(Arrays.asList(product1, product2)));
+        Recipe recipe = new Recipe(1L, "recipe", new ArrayList<>(Arrays.asList(product1, product2)));
+
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
+        when(cartRepository.save(any())).thenReturn(expectedCart);
+        when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
+
+        Cart cart = cartService.removeRecipe(1L, 1L);
+
+        assertThat(cart.getTotalInCents()).isEqualTo(0);
+        assertThat(cart.getProducts()).hasSize(0);
     }
 }

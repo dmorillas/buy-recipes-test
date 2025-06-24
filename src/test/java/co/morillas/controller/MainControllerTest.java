@@ -132,4 +132,60 @@ public class MainControllerTest {
 
         cartRepository.deleteById(expectedCart.getId());
     }
+
+    @Test
+    void removeRecipeReturns404IfCartDoesNotExist() {
+        when()
+            .delete("/carts/1/recipes/1")
+        .then()
+            .statusCode(HttpStatus.SC_NOT_FOUND)
+            .body("message", is("Cart with id 1 not found"))
+        ;
+    }
+
+    @Test
+    void removeRecipeReturns404IfRecipeDoesNotExist() {
+        Cart expectedCart = new Cart();
+        expectedCart = cartRepository.save(expectedCart);
+
+        when()
+            .delete("/carts/1/recipes/7")
+        .then()
+            .statusCode(HttpStatus.SC_NOT_FOUND)
+            .body("message", is("Recipe with id 7 not found"))
+        ;
+
+        cartRepository.deleteById(expectedCart.getId());
+    }
+
+    @Test
+    void removeRecipeReturns200AndCartProductsRemoved() {
+        Product oliveOil = productRepository.findById(1L).get();
+        Product potato = productRepository.findById(2L).get();
+        Product eggs = productRepository.findById(3L).get();
+        Product onion = productRepository.findById(4L).get();
+        Product salt = productRepository.findById(5L).get();
+        Product garlic = productRepository.findById(7L).get();
+
+        Cart expectedCart = new Cart();
+        expectedCart.addProduct(oliveOil);
+        expectedCart.addProduct(potato);
+        expectedCart.addProduct(eggs);
+        expectedCart.addProduct(onion);
+        expectedCart.addProduct(salt);
+        expectedCart.addProduct(garlic);
+        expectedCart = cartRepository.save(expectedCart);
+
+        when()
+                .delete("/carts/1/recipes/1")
+        .then()
+            .statusCode(HttpStatus.SC_OK)
+            .body("id", is(expectedCart.getId().intValue()))
+            .body("totalInCents", is(70))
+            .body("products", hasSize(1))
+            .body("products[0].id", is(7))
+        ;
+
+        cartRepository.deleteById(expectedCart.getId());
+    }
 }
