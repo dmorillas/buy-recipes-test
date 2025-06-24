@@ -26,6 +26,7 @@ dependencies {
     
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'org.assertj:assertj-core:3.27.3'
     testImplementation 'io.rest-assured:rest-assured:5.5.5'
 }
 

@@ -1,18 +1,25 @@
 package co.morillas.controller;
 
 import co.morillas.core.domain.Cart;
+import co.morillas.core.domain.Recipe;
+import co.morillas.core.service.RecipeService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 public class MainController {
 
+    private final RecipeService recipeService;
+
+    public MainController(RecipeService recipeService) {
+        this.recipeService = recipeService;
+    }
+
     @GetMapping("/recipes")
-    public List getAllRecipes() {
-        return new ArrayList();
+    public List<Recipe> getAllRecipes() {
+        return recipeService.getRecipes();
     }
 
     @GetMapping("/carts/{id}")
