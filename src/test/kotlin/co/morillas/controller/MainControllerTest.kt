@@ -11,6 +11,7 @@ import io.restassured.http.ContentType
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.apache.http.HttpStatus
+import org.assertj.core.api.Assertions.assertThat
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.Matchers.hasSize
 import org.junit.jupiter.api.Test
@@ -176,5 +177,37 @@ class MainControllerTest {
             .body("products[0].id", `is`(7))
 
         cartRepository.deleteById(expectedCart.id!!)
+    }
+
+    @Test
+    fun `when adding a cart should return 200 and the new cart information`() {
+        `when`()
+            .post("/carts")
+        .then()
+            .statusCode(HttpStatus.SC_OK)
+            .body("totalInCents", `is`(0))
+            .body("products", hasSize<Any>(0))
+    }
+
+    @Test
+    fun `when deleting a cart should return 404 if cart does not exist`() {
+        `when`()
+            .delete("/carts/1000")
+        .then()
+            .statusCode(HttpStatus.SC_NOT_FOUND)
+            .body("message", `is`("Cart with id 1000 not found"))
+    }
+
+    @Test
+    fun `when deleting a cart should return 200 and delete the cart from repository`() {
+        var expectedCart = Cart()
+        expectedCart = cartRepository.save(expectedCart)
+
+        `when`()
+            .delete("/carts/${expectedCart.id}")
+        .then()
+            .statusCode(HttpStatus.SC_OK)
+
+        assertThat(cartRepository.findById(expectedCart.id)).isEmpty()
     }
 }

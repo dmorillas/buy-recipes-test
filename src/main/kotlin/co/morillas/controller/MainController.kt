@@ -31,4 +31,14 @@ class MainController(
     fun removeRecipeFromCart(@PathVariable cartId: Long, @PathVariable recipeId: Long): CartResponse {
         return cartService.removeRecipe(cartId, recipeId)
     }
+
+    @PostMapping("/carts")
+    fun addCart(): CartResponse {
+        return cartService.addCart()
+    }
+
+    @DeleteMapping("/carts/{cartId}")
+    fun deleteCart(@PathVariable cartId: Long) {
+        return cartService.deleteCart(cartId)
+    }
 } 

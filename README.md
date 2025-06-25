@@ -5,6 +5,7 @@
 - I've integrated SQLite as the database solution because it's a lightweight, self-contained, and serverless database that I think for the purpose of this test was good enough.
 - You can find the DB Schema in file `src/main/resources/schema.sql`
 - You can find the pre-populated data on startup in this file `src/main/resources/data.sql`
+- I've added two enpoints to add (`POST /carts`) and delete (`DELETE /carts/:id`) for testing purposes to be able to add a new cart and delete it.
 
 ## Possible Improvements
 - As an improvement I would consider changing the endpoint 'POST /carts/{id}/add_recipe' to 'POST /carts/{cartId}/recipes/{recipeId}'

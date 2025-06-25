@@ -1,6 +1,7 @@
 package co.morillas.core.service
 
 import co.morillas.controller.CartResponse
+import co.morillas.core.domain.Cart
 import co.morillas.core.exception.NotFoundException
 import co.morillas.repository.CartRepository
 import co.morillas.repository.RecipeRepository
@@ -37,5 +38,17 @@ class CartService (
         val updatedCart = cartRepository.save(cart)
 
         return CartResponse.fromDomain(updatedCart)
+    }
+
+    fun addCart(): CartResponse {
+        val cart = cartRepository.save(Cart())
+
+        return CartResponse.fromDomain(cart)
+    }
+
+    fun deleteCart(cartId: Long) {
+        val cart = cartRepository.findById(cartId).orElseThrow { NotFoundException("Cart with id $cartId not found") }
+
+        cartRepository.deleteById(cartId)
     }
 }

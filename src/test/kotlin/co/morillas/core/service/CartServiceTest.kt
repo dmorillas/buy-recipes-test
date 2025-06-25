@@ -185,4 +185,38 @@ class CartServiceTest {
         assertThat(cart.totalInCents).isEqualTo(0)
         assertThat(cart.products).isEmpty()
     }
+
+    @Test
+    fun `addCart should call the repository`() {
+        val expectedCart = Cart(1L, 0, mutableListOf<Product>())
+
+        `when`(cartRepository.save(any())).thenReturn(expectedCart)
+
+        val cart = cartService.addCart()
+
+        verify(cartRepository, times(1)).save(any(Cart::class.java))
+        assertThat(cart.totalInCents).isEqualTo(0)
+        assertThat(cart.products).isEmpty()
+    }
+
+    @Test
+    fun `deleteCart should throw exception if cart does not exist`() {
+        val exception = assertThrows(
+            NotFoundException::class.java,
+            { cartService.deleteCart(1L) }
+        )
+
+        assertThat(exception.message).isEqualTo("Cart with id 1 not found")
+    }
+
+    @Test
+    fun `deleteCart should call the repository`() {
+        val expectedCart = Cart(1L, 0, mutableListOf<Product>())
+
+        `when`(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart))
+
+        cartService.deleteCart(1L)
+
+        verify(cartRepository, times(1)).deleteById(1L)
+    }
 }
