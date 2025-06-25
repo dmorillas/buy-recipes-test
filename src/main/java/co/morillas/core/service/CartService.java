@@ -2,11 +2,14 @@ package co.morillas.core.service;
 
 import co.morillas.controller.CartResponse;
 import co.morillas.core.domain.Cart;
+import co.morillas.core.domain.Product;
 import co.morillas.core.domain.Recipe;
 import co.morillas.core.exception.NotFoundException;
 import co.morillas.repository.CartRepository;
 import co.morillas.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CartService {
@@ -28,7 +31,10 @@ public class CartService {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Cart with id " + cartId + " not found"));
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new NotFoundException("Recipe with id " + recipeId + " not found"));
 
-        recipe.getProducts().forEach(cart::addProduct);
+        List<Product> cartProducts = cart.getProducts();
+        recipe.getProducts().stream()
+            .filter(product -> !cartProducts.contains(product))
+            .forEach(cart::addProduct);
         cart = cartRepository.save(cart);
 
         return CartResponse.fromDomain(cart);
@@ -38,7 +44,10 @@ public class CartService {
         Cart cart = cartRepository.findById(cartId).orElseThrow(() -> new NotFoundException("Cart with id " + cartId + " not found"));
         Recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new NotFoundException("Recipe with id " + recipeId + " not found"));
 
-        recipe.getProducts().forEach(cart::removeProduct);
+        List<Product> cartProducts = cart.getProducts();
+        recipe.getProducts().stream()
+            .filter(cartProducts::contains)
+            .forEach(cart::removeProduct);
         cart = cartRepository.save(cart);
 
         return CartResponse.fromDomain(cart);

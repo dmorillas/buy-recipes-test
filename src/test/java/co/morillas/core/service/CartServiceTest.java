@@ -109,6 +109,25 @@ class CartServiceTest {
     }
 
     @Test
+    void addRecipe_DoesNothingWhenCartAlreadyHasProduct() {
+        Product product1 = new Product(1L, "product1", 10);
+        Product product2 = new Product(2L, "product2", 20);
+        Cart expectedCart = new Cart(1L, 10, new ArrayList<>(List.of(product1)));
+        Recipe recipe = new Recipe(1L, "recipe", Arrays.asList(product1, product2));
+
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
+        when(cartRepository.save(any())).thenReturn(expectedCart);
+        when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
+
+        CartResponse cart = cartService.addRecipe(1L, 1L);
+
+        assertThat(cart.getTotalInCents()).isEqualTo(30);
+        assertThat(cart.getProducts()).hasSize(recipe.getProducts().size());
+        assertThat(cart.getProducts().get(0).getId()).isEqualTo(recipe.getProducts().get(0).getId());
+        assertThat(cart.getProducts().get(1).getId()).isEqualTo(recipe.getProducts().get(1).getId());
+    }
+
+    @Test
     void removeRecipe_ThrowsExceptionIfCartDoesNotExist() {
         when(cartRepository.findById(1L)).thenReturn(Optional.empty());
 
@@ -140,6 +159,24 @@ class CartServiceTest {
         Product product2 = new Product(2L, "product2", 20);
 
         Cart expectedCart = new Cart(1L, 30, new ArrayList<>(Arrays.asList(product1, product2)));
+        Recipe recipe = new Recipe(1L, "recipe", new ArrayList<>(Arrays.asList(product1, product2)));
+
+        when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
+        when(cartRepository.save(any())).thenReturn(expectedCart);
+        when(recipeRepository.findById(1L)).thenReturn(Optional.of(recipe));
+
+        CartResponse cart = cartService.removeRecipe(1L, 1L);
+
+        assertThat(cart.getTotalInCents()).isEqualTo(0);
+        assertThat(cart.getProducts()).hasSize(0);
+    }
+
+    @Test
+    void removeRecipe_OnlyRemoveProductsAlreadyInCart() {
+        Product product1 = new Product(1L, "product1", 10);
+        Product product2 = new Product(2L, "product2", 20);
+
+        Cart expectedCart = new Cart(1L, 20, new ArrayList<>(List.of(product2)));
         Recipe recipe = new Recipe(1L, "recipe", new ArrayList<>(Arrays.asList(product1, product2)));
 
         when(cartRepository.findById(1L)).thenReturn(Optional.of(expectedCart));
